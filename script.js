@@ -1,3 +1,19 @@
+const displaySYnonyms = (synonyms) => {
+    const htmlE = synonyms.map(el => `<p class="bg-[#EDF7FF] w-fit p-2 rounded-md">${el}</p>`);
+    return htmlE.join('');
+};
+
+const getSpiner = (status) => {
+    if (status == true) {
+        document.getElementById('spiner').classList.remove('hidden');
+        document.getElementById('level-word-card-container').classList.add('hidden');
+    }
+    else {
+        document.getElementById('spiner').classList.add('hidden');
+        document.getElementById('level-word-card-container').classList.remove('hidden');
+    }
+}
+
 const loadLesson = () => {
     fetch("https://openapi.programming-hero.com/api/levels/all")
         .then((res) => res.json())
@@ -20,6 +36,7 @@ const displayLesson = (lessons) => {
                   </button>
          </div>`
         lessonContainer.appendChild(div);
+        getSpiner(false)
     }));
 
 };
@@ -32,6 +49,7 @@ const removeActive = () => {
 };
 
 const loadLevelWord = (id) => {
+   getSpiner(true);
     const url = `https://openapi.programming-hero.com/api/level/${id}`;
     fetch(url).then(res => res.json())
         .then(json => {
@@ -39,9 +57,11 @@ const loadLevelWord = (id) => {
             const lessonBtn = document.getElementById(`lesson-btn-${id}`);
             lessonBtn.classList.add('active');
             displayLevelWord(json.data);
+            
         });
 };
 const displayLevelWord = (words) => {
+     
     const levelWordContainer = document.getElementById('level-word-card-container');
     levelWordContainer.innerHTML = '';
     if (words.length === 0) {
@@ -53,9 +73,11 @@ const displayLevelWord = (words) => {
         </div>
         
         `
+        getSpiner(false);
         return;
     }
     words.forEach(word => {
+        
         const div = document.createElement('div');
         div.innerHTML = `
         <div
@@ -70,20 +92,21 @@ const displayLevelWord = (words) => {
         </div>
          `
         levelWordContainer.appendChild(div);
+        getSpiner(false);
     });
 };
 
-const loadWordDetails=async(id)=>{
-    const url=`https://openapi.programming-hero.com/api/word/${id}`;
-    const res=await fetch(url);
-    const details=await res.json();
+const loadWordDetails = async (id) => {
+    const url = `https://openapi.programming-hero.com/api/word/${id}`;
+    const res = await fetch(url);
+    const details = await res.json();
     displayWordDetails(details.data);
 };
-const displayWordDetails=(data)=>{
-    const detailsContainer=document.getElementById('details-container');
-    detailsContainer.innerHTML='';
-    const div =document.createElement('div');
-    div.innerHTML=`
+const displayWordDetails = (data) => {
+    const detailsContainer = document.getElementById('details-container');
+    detailsContainer.innerHTML = '';
+    const div = document.createElement('div');
+    div.innerHTML = `
      <div class=" flex flex-col gap-5">
          <h3 class="text-lg font-bold">${data.word} (<i class="fa-solid fa-microphone-lines"></i>:${data.pronunciation})</h3>
          <div class="flex flex-col gap-2">
@@ -97,16 +120,14 @@ const displayWordDetails=(data)=>{
          <div class="flex flex-col gap-2">
          <h1>সমার্থক শব্দ গুলো</h1>
          <div class="flex gap-2">
-             <p class="bg-[#EDF7FF] w-fit p-2 rounded-md">${data.synonyms[0]}</p>
-             <p class="bg-[#EDF7FF] w-fit p-2 rounded-md">${data.synonyms[1]}</p>
-             <p class="bg-[#EDF7FF] w-fit p-2 rounded-md">${data.synonyms[2]}</p>
+             ${displaySYnonyms(data.synonyms)}
          </div>
          </div>
      </div>
  `
-detailsContainer.appendChild(div);
-document.getElementById("word_modal").showModal();
+    detailsContainer.appendChild(div);
+    document.getElementById("word_modal").showModal();
 
-}
+};
 
 loadLesson();
