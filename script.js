@@ -32,14 +32,14 @@ const removeActive = () => {
 };
 
 const loadLevelWord = (id) => {
-const url = `https://openapi.programming-hero.com/api/level/${id}`;
-fetch(url).then(res => res.json())
-.then(json =>{
-removeActive();
- const lessonBtn=document.getElementById(`lesson-btn-${id}`);
- lessonBtn.classList.add('active');
- displayLevelWord(json.data);
-});
+    const url = `https://openapi.programming-hero.com/api/level/${id}`;
+    fetch(url).then(res => res.json())
+        .then(json => {
+            removeActive();
+            const lessonBtn = document.getElementById(`lesson-btn-${id}`);
+            lessonBtn.classList.add('active');
+            displayLevelWord(json.data);
+        });
 };
 const displayLevelWord = (words) => {
     const levelWordContainer = document.getElementById('level-word-card-container');
@@ -64,12 +64,13 @@ const displayLevelWord = (words) => {
            <h2 class="text-2xl">Meaning/Pronounciation</h2>
            <h1 class="bangla text-3xl font-semibold">"${word.meaning ? word.meaning : "অর্থ খুঁজে পাওয়া যায়নি"} / ${word.pronunciation ? word.pronunciation : 'উচ্চারণ পাওয়া যায়নি'}"</h1>
            <div class="flex justify-between w-full px-12 items-center ">
-           <div><button class="bg-gray-200 rounded-md p-2 "><i class="fa-solid fa-circle-info"></i></button></div>
-           <div><button class="bg-gray-200 rounded-md p-2 "><i class="fa-solid fa-volume-high "></i></button></div>
+           <div><button onclick="my_modal_1.showModal()" class="bg-gray-200 rounded-md p-2 "><i class="fa-solid fa-circle-info"></i></button></div>
+           <div><button  class="bg-gray-200 rounded-md p-2 "><i class="fa-solid fa-volume-high "></i></button></div>
            </div>
         </div>
          `
         levelWordContainer.appendChild(div);
     });
 };
+
 loadLesson();
