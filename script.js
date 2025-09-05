@@ -47,10 +47,10 @@ const displayLevelWord = (words) => {
     if (words.length === 0) {
         levelWordContainer.innerHTML = `
         <div class="flex  flex-col justify-center items-center col-span-full text-center gap-4 p-5">
-    <img src="assets/alert-error.png" alt="">
-    <h3 class="bangla text-md text-[#79716B]">এই Lesson এ এখনো কোন Vocabulary যুক্ত করা হয়নি।</h3>
-    <h1 class="text-2xl">নেক্সট Lesson এ যান</h1>
-</div>
+          <img src="assets/alert-error.png" alt="">
+          <h3 class="bangla text-md text-[#79716B]">এই Lesson এ এখনো কোন Vocabulary যুক্ত করা হয়নি।</h3>
+          <h1 class="text-2xl">নেক্সট Lesson এ যান</h1>
+        </div>
         
         `
         return;
@@ -64,7 +64,7 @@ const displayLevelWord = (words) => {
            <h2 class="text-2xl">Meaning/Pronounciation</h2>
            <h1 class="bangla text-3xl font-semibold">"${word.meaning ? word.meaning : "অর্থ খুঁজে পাওয়া যায়নি"} / ${word.pronunciation ? word.pronunciation : 'উচ্চারণ পাওয়া যায়নি'}"</h1>
            <div class="flex justify-between w-full px-12 items-center ">
-           <div><button onclick="my_modal_1.showModal()" class="bg-gray-200 rounded-md p-2 "><i class="fa-solid fa-circle-info"></i></button></div>
+           <div><button onclick="loadWordDetails(${word.id})" class="bg-gray-200 rounded-md p-2 "><i class="fa-solid fa-circle-info"></i></button></div>
            <div><button  class="bg-gray-200 rounded-md p-2 "><i class="fa-solid fa-volume-high "></i></button></div>
            </div>
         </div>
@@ -72,5 +72,41 @@ const displayLevelWord = (words) => {
         levelWordContainer.appendChild(div);
     });
 };
+
+const loadWordDetails=async(id)=>{
+    const url=`https://openapi.programming-hero.com/api/word/${id}`;
+    const res=await fetch(url);
+    const details=await res.json();
+    displayWordDetails(details.data);
+};
+const displayWordDetails=(data)=>{
+    const detailsContainer=document.getElementById('details-container');
+    detailsContainer.innerHTML='';
+    const div =document.createElement('div');
+    div.innerHTML=`
+     <div class=" flex flex-col gap-5">
+         <h3 class="text-lg font-bold">${data.word} (<i class="fa-solid fa-microphone-lines"></i>:${data.pronunciation})</h3>
+         <div class="flex flex-col gap-2">
+             <h4>Meaning</h4>
+             <p>${data.meaning}</p>
+         </div>
+        <div class="flex flex-col gap-2">
+             <p>Example</p>
+             <p>${data.sentence}</p>
+         </div>
+         <div class="flex flex-col gap-2">
+         <h1>সমার্থক শব্দ গুলো</h1>
+         <div class="flex gap-2">
+             <p class="bg-[#EDF7FF] w-fit p-2 rounded-md">${data.synonyms[0]}</p>
+             <p class="bg-[#EDF7FF] w-fit p-2 rounded-md">${data.synonyms[1]}</p>
+             <p class="bg-[#EDF7FF] w-fit p-2 rounded-md">${data.synonyms[2]}</p>
+         </div>
+         </div>
+     </div>
+ `
+detailsContainer.appendChild(div);
+document.getElementById("word_modal").showModal();
+
+}
 
 loadLesson();
